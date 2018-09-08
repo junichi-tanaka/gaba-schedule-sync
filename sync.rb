@@ -2,8 +2,12 @@ require 'rubygems'
 require 'time'
 require 'pp'
 require 'mechanize'
-require 'google_calendar'
+require 'google/api_client/client_secrets'
+require 'google/apis/calendar_v3'
+require 'dotenv'
 require 'pit'
+require 'active_support'
+require 'active_support/core_ext'
 
 APPNAME = 'gaba-googlecalendar-sync'
 TITLE = 'Gaba Lesson'
@@ -77,38 +81,32 @@ class Gaba
 end
 
 class GoogleCalendar
-  def initialize(user, pass, appname)
-    @user = user
-    @pass = pass
-    @appname = appname
-  end
-
   def calendar
-    @calendar ||= Google::Calendar.new(
-                            :username => @user,
-                            :password => @pass,
-                            :app_name => @appname)
+    return @calendar if @calendar
+
+    Dotenv.load
+    client        = Google::Apis::CalendarV3::CalendarService.new
+    authorization = Google::APIClient::ClientSecrets.new(
+      'web' => {
+        client_id:     ENV['CLIENT_ID'],
+        client_secret: ENV['CLIENT_SECRET'],
+        refresh_token: ENV['REFRESH_TOKEN'],
+      }
+    ).to_authorization
+    client.authorization = authorization
+
+    @calendar = client
   end
 
   def delete_events_in_range(start_min, start_max, criteria)
-    events = calendar.find_events_in_range(start_min, start_max)
-    events ||= []
-    events.each do |e|
-      next if /#{criteria[:title]}/ !~ e.title if criteria[:title] != nil
-      puts e.title
-      puts e.start_time
-      calendar.delete_event(e)
+    events = calendar.list_events('primary', time_min: start_min.iso8601, time_max: start_max.iso8601, q: criteria[:title])
+    events.items.each do |e|
+      calendar.delete_event('primary', e.id)
     end 
   end
 
   def create_event(event)
-    event = calendar.create_event do |e|
-      e.title = event[:title]
-      e.where = event[:where]
-      e.content = event[:content]
-      e.start_time = event[:start_time]
-      e.end_time = event[:end_time]
-    end
+    event = calendar.insert_event('primary', event)
   end
 end
 
@@ -122,10 +120,9 @@ class Sync
     mygaba.login
     bookings = mygaba.future_bookings
 
-    pit = Pit.get('google.com')
-    calendar = GoogleCalendar.new(pit['username'], pit['password'], APPNAME)
+    calendar = GoogleCalendar.new
     start_min = Time.now
-    start_max = Time.local(start_min.year, start_min.month + 3, 1, 0, 0, 0) - 1
+    start_max = start_min + 14.days
     calendar.delete_events_in_range(start_min, start_max,  {:title => TITLE})
     bookings.each do |booking|
       e = format_event(booking)
@@ -135,14 +132,14 @@ class Sync
 
   def format_event(booking)
     start_time = Time.parse("#{booking[:date]} #{booking[:time]}")
-    end_time = Time.at(start_time.to_i + 60 * 40)
-    event = {
-      :title => TITLE,
-      :where => booking[:ls],
-      :content => "#{booking[:date]}\n#{booking[:time]}\n#{booking[:instructor]}\n#{booking[:ls]}\n",
-      :start_time => start_time,
-      :end_time => end_time
-    }
+    end_time = start_time + 40.minutes
+    e = Google::Apis::CalendarV3::Event.new
+    e.start = Google::Apis::CalendarV3::EventDateTime.new(date_time: start_time.to_datetime, time_zone: 'Asia/Tokyo')
+    e.end   = Google::Apis::CalendarV3::EventDateTime.new(date_time: end_time.to_datetime, time_zone: 'Asia/Tokyo')
+    e.summary = TITLE
+    e.location = booking[:ls]
+    e.description = "#{booking[:date]}\n#{booking[:time]}\n#{booking[:instructor]}\n#{booking[:ls]}\n"
+    e
   end
 end
 

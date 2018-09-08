@@ -1,24 +1,41 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    TimezoneParser (0.3.3)
-      insensitive_hash
-      tzinfo
+    activesupport (5.2.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    concurrent-ruby (1.0.5)
     connection_pool (2.2.2)
+    declarative (0.0.10)
+    declarative-option (0.1.0)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.5.0)
     faraday (0.15.2)
       multipart-post (>= 1.2, < 3)
-    google_calendar (0.6.4)
-      TimezoneParser (~> 0.3.0)
-      json (>= 1.8.3)
+    google-api-client (0.23.4)
+      addressable (~> 2.5, >= 2.5.1)
+      googleauth (>= 0.5, < 0.7.0)
+      httpclient (>= 2.8.1, < 3.0)
+      mime-types (~> 3.0)
+      representable (~> 3.0)
+      retriable (>= 2.0, < 4.0)
+    googleauth (0.6.4)
+      faraday (~> 0.12)
+      jwt (>= 1.4, < 3.0)
+      memoist (~> 0.12)
+      multi_json (~> 1.11)
+      os (>= 0.9, < 2.0)
       signet (~> 0.7)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    insensitive_hash (0.3.3)
-    json (2.1.0)
+    httpclient (2.8.3)
+    i18n (1.1.0)
+      concurrent-ruby (~> 1.0)
     jwt (2.1.0)
     mechanize (2.7.6)
       domain_name (~> 0.5, >= 0.5.1)
@@ -29,10 +46,12 @@ GEM
       nokogiri (~> 1.6)
       ntlm-http (~> 0.1, >= 0.1.1)
       webrobots (>= 0.0.9, < 0.2)
+    memoist (0.16.0)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
     mini_portile2 (2.3.0)
+    minitest (5.11.3)
     multi_json (1.13.1)
     multipart-post (2.0.0)
     net-http-digest_auth (1.4.1)
@@ -41,8 +60,14 @@ GEM
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     ntlm-http (0.1.1)
+    os (1.0.0)
     pit (0.0.7)
     public_suffix (3.0.3)
+    representable (3.0.4)
+      declarative (< 0.1.0)
+      declarative-option (< 0.2.0)
+      uber (< 0.2.0)
+    retriable (3.1.2)
     signet (0.8.1)
       addressable (~> 2.3)
       faraday (~> 0.9)
@@ -51,6 +76,7 @@ GEM
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    uber (0.1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
@@ -60,9 +86,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  google_calendar
+  activesupport
+  dotenv
+  google-api-client
+  googleauth
   mechanize
   pit
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

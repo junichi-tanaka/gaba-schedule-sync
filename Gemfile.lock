@@ -1,15 +1,15 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.0.0)
+    activesupport (6.0.6.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-      zeitwerk (~> 2.1, >= 2.1.8)
+      zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.2.0)
     connection_pool (2.2.2)
     declarative (0.0.10)
     declarative-option (0.1.0)
@@ -36,7 +36,7 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httpclient (2.8.3)
-    i18n (1.6.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jwt (2.2.1)
     mechanize (2.7.6)
@@ -54,7 +54,7 @@ GEM
     mime-types-data (3.2019.0331)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.11.3)
+    minitest (5.17.0)
     multi_json (1.13.1)
     multipart-post (2.1.1)
     net-http-digest_auth (1.4.1)
@@ -77,14 +77,14 @@ GEM
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
     thread_safe (0.3.6)
-    tzinfo (1.2.5)
+    tzinfo (1.2.11)
       thread_safe (~> 0.1)
     uber (0.1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
     webrobots (0.1.2)
-    zeitwerk (2.1.9)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   ruby
